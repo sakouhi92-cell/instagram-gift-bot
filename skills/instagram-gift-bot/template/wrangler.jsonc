@@ -1,0 +1,25 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  // BOT_NAME: lowercase letters, digits and dashes, e.g. "gift-bot-ahmed"
+  "name": "BOT_NAME",
+  "main": "src/index.js",
+  "compatibility_date": "2025-09-01",
+  // Keep variables the owner adds in the Cloudflare dashboard (IG_APP_SECRET) when redeploying
+  "keep_vars": true,
+
+  "d1_databases": [
+    { "binding": "DB", "database_name": "BOT_NAME", "database_id": "DATABASE_ID" }
+  ],
+
+  // Every hour: retry failed sends, read missed comments, refresh the token
+  "triggers": { "crons": ["0 * * * *"] },
+
+  // Not secret. The only secret is IG_APP_SECRET, set by the owner in the Cloudflare dashboard.
+  "vars": {
+    "GRAPH_VERSION": "v23.0",
+    "IG_USERNAME": "YOUR_ACCOUNT",
+    "PUBLIC_URL": "https://BOT_NAME.WORKERS_SUBDOMAIN.workers.dev",
+    "IG_APP_ID": "INSTAGRAM_APP_ID",
+    "VERIFY_TOKEN": "VERIFY_WORD"
+  }
+}

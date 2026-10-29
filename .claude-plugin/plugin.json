@@ -1,0 +1,8 @@
+{
+  "name": "instagram-gift-bot",
+  "version": "1.0.0",
+  "description": "Free Instagram comment-to-DM gift bot with a real follow check (Cloudflare Workers + official Instagram API). Claude sets it up with you, step by step, in Tunisian Darija.",
+  "author": { "name": "Wael Sakouhi", "url": "https://www.instagram.com/sakouhiwael/" },
+  "homepage": "https://github.com/sakouhi92-cell/instagram-gift-bot",
+  "keywords": ["instagram", "dm", "bot", "cloudflare", "darija"]
+}

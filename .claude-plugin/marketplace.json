@@ -1,0 +1,11 @@
+{
+  "name": "sakouhi-tools",
+  "owner": { "name": "Wael Sakouhi", "url": "https://www.instagram.com/sakouhiwael/" },
+  "plugins": [
+    {
+      "name": "instagram-gift-bot",
+      "source": "./",
+      "description": "Free Instagram comment-to-DM gift bot, set up with Claude in Tunisian Darija."
+    }
+  ]
+}
