@@ -20,7 +20,7 @@ What the bot does: someone comments a keyword under a reel → the bot replies u
 5. **100% free.** Cloudflare free plan, Meta free. If something would cost money, say so before.
 6. **Official only.** No password-based bots, no fake "not following" answers, nothing against Meta's rules.
 7. Give exact click paths with the button names as they appear (Meta's dashboard is often in the user's browser language, e.g. French: «Afficher», «Vérifier et enregistrer»). When unsure what the user sees, ask for a screenshot.
-8. If a browser tool (Claude in Chrome) is available and the user agrees, you may click through Meta/Cloudflare pages for them, except: typing passwords, copying the app secret, accepting OAuth/permissions. Those stay with the user.
+8. **You do the clicking.** If a browser tool is available, do every web step yourself (see «Browser» below). The user only logs in, handles the app secret and accepts consent screens.
 
 ## Phase 0 — Welcome
 
@@ -36,6 +36,20 @@ The user was promised about 15 minutes. Everything that does not need them is al
 - **Direct links only.** Always give the exact URL of the page to open, never "go to the menu and find…".
 - **Batch checks.** Run the prerequisite checks (`node -v`, folder creation, `npm install`) silently at the start; only mention what is missing.
 - **No long explanations.** One or two lines per step. Explain more only if they ask.
+
+## Browser: you click, the user only logs in
+
+Claude Desktop has a built-in browser pane (tools `mcp__Claude_Browser__*`); Claude in Chrome (`mcp__claude-in-chrome__*`) works too. If either is available, use it by default for every web step: Cloudflare dashboard, Meta for Developers, `<PUBLIC_URL>/setup`, link checks. Open the exact page yourself, read it, click and fill the fields yourself (app name, use case, permissions, Privacy/Delete URLs, redirect URL, webhook URL and verify word, field subscriptions). Say in one Darija line what you are doing, e.g. «توّا نحل Meta ونعمل الـ app…».
+
+The user does only these, in that same browser:
+1. **Logging in** (Facebook/Meta, Cloudflare, Instagram): open the login page and say «اعمل login هوني، وقلّي كي تكمّل». Never type emails, passwords or codes.
+2. **The app secret** (Phase 5): they copy it from Meta and paste it into Cloudflare themselves. Never click «Afficher» on it, never read or copy it.
+3. **Consent screens**: OAuth «Autoriser»/«Allow», terms, cookie banners.
+
+Before a click that creates or publishes something, ask one short «نعملها؟» and wait: creating the Meta app, publishing it Live, saving the webhook.
+The built-in browser keeps its own sign-ins, separate from the user's Chrome, so they log in there once. When they must act in the pane, tell them to show it (Ctrl+Shift+B on Windows, Cmd+Shift+B on Mac).
+`npx wrangler login` opens the system browser instead; that is fine, the user logs in there.
+If a page looks different from this guide, or the same click fails twice, stop clicking: ask for a screenshot and guide them by text. Without any browser tool, guide by text as the phases describe.
 
 ## Phase 1 — Check what they have (one message)
 
@@ -87,7 +101,7 @@ Guide step by step:
 2. In the app: Cas d'utilisation → API Instagram → Personnaliser → **«Configuration de l'API avec la connexion Instagram»**.
    If only the Facebook-login setup is offered, stop and tell the user (in Darija) that Meta did not offer Instagram login on this app; suggest trying a new app, and if it still happens, to contact @sakouhiwael. Do not continue with Facebook login.
 3. Permissions: `instagram_business_basic` and `instagram_business_manage_messages` (add them if missing). `instagram_business_manage_comments` is optional: skip it if Meta shows an error.
-4. On that page the user copies **«ID d'app Instagram»** (a number, not secret) and sends it to you → set `IG_APP_ID`, deploy.
+4. On that page read **«ID d'app Instagram»** (a number, not secret) yourself in the browser, or ask the user to send it → set `IG_APP_ID`, deploy.
 5. App settings → Basic («Paramètres de l'app → Général»): Privacy Policy URL = `<PUBLIC_URL>/privacy`, User data deletion URL = `<PUBLIC_URL>/delete-data`, category, icon if asked. Save.
 6. Publish the app («Publier» → Live). Without Live, real comments do not arrive.
 
@@ -102,7 +116,7 @@ Check with `npx wrangler secret list` (names only). If it is not listed as a sec
 ## Phase 6 — Login and webhook
 
 1. Meta, «Configurez la connexion professionnelle Instagram» (business login settings) → add the redirect URL `<PUBLIC_URL>/setup/callback` → save.
-2. The user opens `<PUBLIC_URL>/setup`, logs in with their Instagram account, accepts. They must see «✅ البوت مربوط».
+2. Open `<PUBLIC_URL>/setup` (in the browser yourself if you have one); the user logs in with their Instagram account and accepts. They must see «✅ البوت مربوط».
    Check: `SELECT key, length(value) FROM settings` shows `ig_token`, and `SELECT kind, detail FROM log ORDER BY id DESC LIMIT 3` shows `setup_done` with `"success":true`. If `setup_error`, read the detail (no token in it) and fix.
 3. Meta, «Configurez les webhooks»: URL de rappel = `<PUBLIC_URL>/webhook`, Vérifier le token = the `VERIFY_WORD` → «Vérifier et enregistrer». Then subscribe (toggle on) **comments**, **messages**, **messaging_postbacks**.
    If the account had another bot/tool on this webhook (n8n, ManyChat…), say that it stops receiving events from now.
