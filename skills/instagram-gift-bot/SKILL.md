@@ -24,7 +24,7 @@ What the bot does: someone comments a keyword under a reel → the bot replies u
 
 ## Phase 0 — Welcome
 
-Say in Darija, briefly: what the bot does (the flow above, 4–5 short lines), that it takes about one hour once, and the 3 things only they can do (create the Meta app, put the secret key in Cloudflare, log in with Instagram). Then ask if they are ready:
+Say in Darija, briefly: what the bot does (the flow above, 4–5 short lines), that it takes about 15 minutes, once (say «15 دقيقة»), and the 3 things only they can do (create the Meta app, put the secret key in Cloudflare, log in with Instagram). Then ask if they are ready:
 1. إيه، نبداو
 2. عندي سؤال قبل
 
