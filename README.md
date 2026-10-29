@@ -34,7 +34,7 @@ The user sent you this link because they want this Instagram gift bot set up for
    tar -xf igbot.zip
    ```
 
-   (this gives the folder `instagram-gift-bot-main`; delete `igbot.zip` afterwards).
+   (this gives the folder `instagram-gift-bot-main`; delete `igbot.zip` afterwards). On Windows use the built-in `C:\Windows\System32\tar.exe` (GNU tar from Git Bash cannot read zip files), or in PowerShell `Expand-Archive igbot.zip -DestinationPath .`
 3. **Read `skills/instagram-gift-bot/SKILL.md` from that folder and follow it exactly.** The bot code to copy is in `skills/instagram-gift-bot/template/`.
 4. Optional, for later sessions: if the `claude` CLI is available, also install the plugin so the skill loads by itself next time. Do not block on this or ask the user about it:
 
