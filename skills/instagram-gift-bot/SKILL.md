@@ -64,7 +64,7 @@ Meanwhile run `node -v` yourself. If Node.js is missing, tell them to install th
 Ask in ONE message, with an example answer they can copy and adapt:
 1. Their Instagram username (without @).
 2. For each gift: the keyword people comment + the link (Drive, PDF, YouTube, Notion…).
-   Example: «sakouhiwael — GUIDE: https://drive.google.com/… — PROMO: https://…»
+   Example: «monshop.tn — GUIDE: https://drive.google.com/… — PROMO: https://…»
 
 Defaults (do not ask, mention in one line that they can change them later):
 - Gift name in the DM: you write it from the keyword and the link (short, one emoji).
