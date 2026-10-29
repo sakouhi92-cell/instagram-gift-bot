@@ -28,23 +28,36 @@ Say in Darija, briefly: what the bot does (the flow above, 4–5 short lines), t
 1. إيه، نبداو
 2. عندي سؤال قبل
 
-## Phase 1 — Check what they have
+## Speed: the 15-minute plan
 
-Ask one by one (with choices), and help them get what is missing:
-- Instagram account is **Professional** (Creator or Business)? If not: Instagram app → Paramètres → Type de compte et outils → Passer à un compte professionnel.
+The user was promised about 15 minutes. Everything that does not need them is already prepared in `template/` or done by you in the background. So:
+- **Ask few questions, all at once.** One message with the 3 things you need (Phase 2). Use the defaults for everything else and do not ask about them unless the user wants to change something.
+- **Work while they click.** As soon as you have the username: build and deploy the Worker (Phase 3) yourself while the user creates the Meta app (Phase 4). Only `wrangler login` needs them for a moment.
+- **Direct links only.** Always give the exact URL of the page to open, never "go to the menu and find…".
+- **Batch checks.** Run the prerequisite checks (`node -v`, folder creation, `npm install`) silently at the start; only mention what is missing.
+- **No long explanations.** One or two lines per step. Explain more only if they ask.
+
+## Phase 1 — Check what they have (one message)
+
+In ONE message ask them to confirm (they answer «إيه» or say what is missing):
+- Instagram account is **Professional** (Creator or Business). If not: Instagram app → Paramètres → Type de compte et outils → Passer à un compte professionnel.
 - A personal Facebook account (needed only to log in to developers.facebook.com). No Facebook Page needed, and it does not have to be linked to the Instagram account.
 - A Cloudflare account (free): https://dash.cloudflare.com/sign-up
-- Node.js: run `node -v`. If missing, tell them to install the LTS from https://nodejs.org and reopen Claude.
+Meanwhile run `node -v` yourself. If Node.js is missing, tell them to install the LTS from https://nodejs.org and reopen Claude in the same folder.
 
-## Phase 2 — The gifts (interview)
+## Phase 2 — The gifts (one message)
 
-Ask, one question per message:
+Ask in ONE message, with an example answer they can copy and adapt:
 1. Their Instagram username (without @).
-2. How many gifts/keywords? For each: the keyword people comment (e.g. GUIDE), the gift name shown in the DM (offer 2–3 short suggestions with one emoji), and the link (Drive, PDF, YouTube, Notion…). Check each link opens (curl status) and warn if it is private.
-3. The public reply under the comment. Default «بعثتلك ميساج 📩». Offer to keep it.
-4. The language of the bot's DMs. Default Tunisian Darija (the template texts). If they want French/Arabic/English, translate every text in `messages.js` keeping the emojis and the 80-character limit per line.
+2. For each gift: the keyword people comment + the link (Drive, PDF, YouTube, Notion…).
+   Example: «sakouhiwael — GUIDE: https://drive.google.com/… — PROMO: https://…»
 
-Then show a short summary table (keyword → gift name → link) and ask to confirm.
+Defaults (do not ask, mention in one line that they can change them later):
+- Gift name in the DM: you write it from the keyword and the link (short, one emoji).
+- Reply under the comment: «بعثتلك ميساج 📩».
+- DM language: Tunisian Darija (the template texts). If the user writes to you in another language or asks for it, translate every text in `messages.js`, keeping the emojis and the 80-character limit per line.
+
+Check each link opens (curl status) and warn if it is private. Show a short summary table (keyword → gift name → link) and go on unless they want a change.
 
 ## Phase 3 — Build and deploy the Worker
 
@@ -57,7 +70,7 @@ Fill the template:
 
 Deploy:
 1. `npm install` in the bot folder.
-2. `npx wrangler login` → a browser page opens; the user logs in to Cloudflare and clicks Allow.
+2. `npx wrangler login` → a browser page opens; the user logs in to Cloudflare and clicks Allow. Ask for this right after Phase 2, then tell them to start Phase 4 (the Meta app) while you finish the deploy.
 3. `npx wrangler d1 create <BOT_NAME>` → put the returned id in `DATABASE_ID`.
 4. `npx wrangler d1 execute <BOT_NAME> --remote --file=schema.sql`
 5. Deploy (filtered output, rule 4). The first deploy may ask to register a workers.dev subdomain: let the user pick one. Read the URL from the output, set `PUBLIC_URL` to it (no trailing slash), deploy again.
