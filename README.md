@@ -5,7 +5,7 @@ Claude يركّبو معاك خطوة بخطوة، بالدارجة التونس
 
 ## كيفاش تبدا
 
-1. حل **Claude Desktop** ← **Code**، واختار فولدر فارغ.
+1. حل **Claude Desktop** ← **Code**، واختار **Documents** كي يطلب فولدر.
 2. ابعث لـ Claude:
 
    > نصّبلي الـ plugin هذا وابدا: github.com/sakouhi92-cell/instagram-gift-bot

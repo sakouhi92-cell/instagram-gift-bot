@@ -48,7 +48,7 @@ Then show a short summary table (keyword → gift name → link) and ask to conf
 
 ## Phase 3 — Build and deploy the Worker
 
-Work in a new folder `bot` inside the current folder. Copy everything from this skill's `template/` folder into it.
+You create the bot's folder, never the user. Create `instagram-gift-bot-<username>` inside the folder Claude was opened in (usually Documents) and copy everything from this skill's `template/` folder into it. Tell the user its full path in one line (it is where the bot lives; next time they open Claude in the same folder and say what to change). All commands below run inside that folder.
 
 Fill the template:
 - `src/messages.js` → `GIFTS`: one entry per keyword, id = short latin slug. `words` = the keyword plus common misspellings and Arabic/Latin transliterations (8–15 entries), written already cleaned the way `text.js` `words()` cleans text: lowercase, Arabic letters normalized (أإآ→ا، ة→ه، ى→ي), no repeated letters, no punctuation. Test with `node -e` importing `findGift` from `src/text.js` on 10+ variants (good ones match, words like "bravo", "merci", "top" do not).
@@ -56,7 +56,7 @@ Fill the template:
 - `wrangler.jsonc`: `BOT_NAME` = `gift-bot-<username>` (lowercase, dashes, ≤ 40 chars). `VERIFY_WORD` = a random word like `bot-verify-<6 random letters>`.
 
 Deploy:
-1. `npm install` in `bot`.
+1. `npm install` in the bot folder.
 2. `npx wrangler login` → a browser page opens; the user logs in to Cloudflare and clicks Allow.
 3. `npx wrangler d1 create <BOT_NAME>` → put the returned id in `DATABASE_ID`.
 4. `npx wrangler d1 execute <BOT_NAME> --remote --file=schema.sql`
@@ -106,4 +106,4 @@ Finish with a short Darija summary: what works, the link of each gift, and how t
 
 ## Later (maintenance)
 
-When the user opens Claude in the same folder and asks to add/change a keyword, gift, or text: edit `bot/src/messages.js`, test `findGift`, deploy (filtered). New users get the right text per gift; people who already got the same gift get «الهدية عندك من قبل».
+When the user opens Claude in the same folder and asks to add/change a keyword, gift, or text: find the `instagram-gift-bot-*` folder, edit its `src/messages.js`, test `findGift`, deploy (filtered). New users get the right text per gift; people who already got the same gift get «الهدية عندك من قبل».
