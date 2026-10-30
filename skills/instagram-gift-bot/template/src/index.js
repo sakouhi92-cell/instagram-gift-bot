@@ -1,5 +1,5 @@
 // Instagram gift bot (Instagram API with Instagram Login). Template from github.com/sakouhi92-cell/instagram-gift-bot
-// Someone comments a keyword (CLAUDE, كليون...) -> reply under the comment,
+// Someone comments a keyword (for example GUIDE) -> reply under the comment,
 // DM "follow me" + button -> real follow check -> gift link. Everything is logged in D1.
 
 import * as M from './messages.js';
@@ -55,7 +55,8 @@ async function startSetup(env) {
   dialog.searchParams.set('client_id', env.IG_APP_ID);
   dialog.searchParams.set('redirect_uri', `${env.PUBLIC_URL}/setup/callback`);
   dialog.searchParams.set('response_type', 'code');
-  // Same permissions the n8n workflows ran with (Meta refused to add manage_comments to this app on 2026-10-29)
+  // Enough for DMs and replies under comments (tested 2026-10-29). Add instagram_business_manage_comments
+  // only if replies under comments fail with a permission error.
   dialog.searchParams.set('scope', 'instagram_business_basic,instagram_business_manage_messages');
   dialog.searchParams.set('state', state);
   return Response.redirect(dialog.toString(), 302);

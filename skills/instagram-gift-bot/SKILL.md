@@ -54,7 +54,7 @@ If a page looks different from this guide, or the same click fails twice, stop c
 ## Phase 1 — Check what they have (one message)
 
 In ONE message ask them to confirm (they answer «إيه» or say what is missing):
-- Instagram account is **Professional** (Creator or Business). If not: Instagram app → Paramètres → Type de compte et outils → Passer à un compte professionnel.
+- Instagram account is **Professional** (Creator or Business). If not: Instagram app → Paramètres → Type de compte et outils → Passer à un compte professionnel. On a computer (instagram.com): Plus («More») → Paramètres → Type de compte et outils → Passer à un compte professionnel.
 - A personal Facebook account (needed only to log in to developers.facebook.com). No Facebook Page needed, and it does not have to be linked to the Instagram account.
 - A Cloudflare account (free): https://dash.cloudflare.com/sign-up
 Meanwhile run `node -v` yourself. If Node.js is missing, tell them to install the LTS from https://nodejs.org and reopen Claude in the same folder.
@@ -71,6 +71,8 @@ Defaults (do not ask, mention in one line that they can change them later):
 - Reply under the comment: «بعثتلك ميساج 📩».
 - DM language: Tunisian Darija (the template texts). If the user writes to you in another language or asks for it, translate every text in `messages.js`, keeping the emojis and the 80-character limit per line.
 
+Each gift must be a **link**, not a file on their computer. If they give a local file (PDF, image…), explain the Google Drive way: drive.google.com → Nouveau → Importer un fichier → right-click the file → Partager → under «Accès général» choose «Tous les utilisateurs disposant du lien» → Copier le lien. Warn them once not to share files with personal data (CV, ID, phone numbers…).
+Keywords: if a keyword is a short everyday word (e.g. «ALO», «OK», «TOP»), warn that normal comments will trigger the bot, and suggest a more special word.
 Check each link opens (curl status) and warn if it is private. Show a short summary table (keyword → gift name → link) and go on unless they want a change.
 
 ## Phase 3 — Build and deploy the Worker
@@ -83,12 +85,12 @@ Fill the template:
 - `wrangler.jsonc`: `BOT_NAME` = `gift-bot-<username>` (lowercase, dashes, ≤ 40 chars). `VERIFY_WORD` = a random word like `bot-verify-<6 random letters>`.
 
 Deploy:
-1. `npm install` in the bot folder.
-2. `npx wrangler login` → a browser page opens; the user logs in to Cloudflare and clicks Allow. Ask for this right after Phase 2, then tell them to start Phase 4 (the Meta app) while you finish the deploy.
+1. `npm install` in the bot folder. npm may print warnings (e.g. about install scripts for `workerd`): they are harmless, do not worry the user with them.
+2. **Cloudflare account.** First run `npx wrangler whoami`. Wrangler remembers one login for the whole computer, so it may already be logged in to someone else's account (a previous test, a friend's bot…). If it shows an account, tell the user its email and ask «هذا الحساب متاعك؟»; if not theirs, run `npx wrangler logout` then login. To log in: `npx wrangler login` → a browser page opens; the user logs in to Cloudflare and clicks Allow. If login times out or fails with a TLS error, run it again from Bash. Then put the confirmed Account ID (from `whoami`) in `wrangler.jsonc` → `account_id`. Do this right after Phase 2, then tell them to start Phase 4 (the Meta app) while you finish the deploy.
 3. `npx wrangler d1 create <BOT_NAME>` → put the returned id in `DATABASE_ID`.
 4. `npx wrangler d1 execute <BOT_NAME> --remote --file=schema.sql`
-5. Deploy (filtered output, rule 4). The first deploy may ask to register a workers.dev subdomain: let the user pick one. Read the URL from the output, set `PUBLIC_URL` to it (no trailing slash), deploy again.
-6. Check `curl -s -o /dev/null -w "%{http_code}" <PUBLIC_URL>/privacy` returns 200.
+5. Deploy (filtered output, rule 4). The first deploy may register a workers.dev subdomain for the account; if it asks, suggest the user's name (e.g. `<username>`), since it appears in every link. Read the URL from the output, set `PUBLIC_URL` to it (no trailing slash), deploy again.
+6. Check `curl -s -o /dev/null -w "%{http_code}" <PUBLIC_URL>/privacy` returns 200. A brand-new workers.dev address can fail (TLS error, 404) for a few minutes: retry every 30 seconds for up to 5 minutes before treating it as a problem.
 
 Windows notes: if `npx` is blocked in PowerShell, use the Bash tool. If a TLS error appears behind antivirus, retry from Bash.
 
@@ -96,11 +98,13 @@ Windows notes: if `npx` is blocked in PowerShell, use the Bash tool. If a TLS er
 
 The key lesson: **the app must use "API setup with Instagram login" (connexion Instagram), never "with Facebook login".** With Facebook login, only the first DM goes out, button clicks never arrive and the second DM fails with "not thread owner".
 
-Guide step by step:
+Meta's dashboard follows the language of the user's Facebook account. The labels below are French; in other languages match them by meaning (e.g. German «App erstellen», English «Create app», «Use cases», «Publish»). Ask for a screenshot when unsure.
+
+0. **Developer registration (new developers only).** If https://developers.facebook.com/apps shows a welcome screen («Commencer», «Get started», «Los geht's») instead of the app list, the user must first register as a developer: accept the terms, then verify the account. Phone verification often fails when the number is typed there: first add the phone to the Facebook account in Accounts Center → Coordonnées / Personal details → Contact info, confirm it by SMS, then come back. If the SMS does not arrive: wait 10 minutes and retry, try another number, or use the credit-card verification Meta offers (nothing is charged). These steps stay with the user (rule 3 and «Browser»): you only open the pages and explain.
 1. https://developers.facebook.com/apps → Create app («Créer une app»). Name: anything, e.g. "<username> bot". Use case: **«Gérer les messages et le contenu sur Instagram»** (Instagram API). No business portfolio needed.
 2. In the app: Cas d'utilisation → API Instagram → Personnaliser → **«Configuration de l'API avec la connexion Instagram»**.
    If only the Facebook-login setup is offered, stop and tell the user (in Darija) that Meta did not offer Instagram login on this app; suggest trying a new app, and if it still happens, to contact @sakouhiwael. Do not continue with Facebook login.
-3. Permissions: `instagram_business_basic` and `instagram_business_manage_messages` (add them if missing). `instagram_business_manage_comments` is optional: skip it if Meta shows an error.
+3. Permissions: `instagram_business_basic` and `instagram_business_manage_messages` (add them if missing). These two are enough for the DMs and the reply under the comment (tested on a live bot). `instagram_business_manage_comments` is optional: add it if Meta allows; if Meta shows an error, skip it. If in Phase 7 the reply under the comment fails (`send_failed` with kind `comment_reply`), add it then and add it to the `scope` in `src/index.js`.
 4. On that page read **«ID d'app Instagram»** (a number, not secret) yourself in the browser, or ask the user to send it → set `IG_APP_ID`, deploy.
 5. App settings → Basic («Paramètres de l'app → Général»): Privacy Policy URL = `<PUBLIC_URL>/privacy`, User data deletion URL = `<PUBLIC_URL>/delete-data`, category, icon if asked. Save.
 6. Publish the app («Publier» → Live). Without Live, real comments do not arrive.
@@ -127,6 +131,7 @@ Meta's «Test» button is not enough. Ask the user to have a friend (another acc
 1. comment the keyword under a reel,
 2. tap «تابعتك ✅» without following → must get «مازلت ما عملتش Follow 😐»,
 3. follow, tap again → must get the gift.
+Also check that the reply «بعثتلك ميساج 📩» appeared under the comment.
 Watch `SELECT kind, detail, datetime(at/1000,'unixepoch') FROM log ORDER BY id DESC LIMIT 10` while they test. `bad_signature` = the secret is wrong or another app also sends events. `send_failed` with "not thread owner" = the app is using Facebook login (Phase 4).
 
 Finish with a short Darija summary: what works, the link of each gift, and how to change things later.

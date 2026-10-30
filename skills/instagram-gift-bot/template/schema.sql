@@ -1,4 +1,4 @@
--- D1 database for the DM bot. Run once: npx wrangler d1 execute dm-bot --remote --file=schema.sql
+-- D1 database for the gift bot. Run once: npx wrangler d1 execute <BOT_NAME> --remote --file=schema.sql
 
 -- One row per person who asked for the gift
 CREATE TABLE IF NOT EXISTS users (
@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS users (
   gift_sent_at  INTEGER,
   gift_count    INTEGER NOT NULL DEFAULT 0,
   gift          TEXT,                      -- gift id from messages.js GIFTS (last one asked)
-  gifts_sent    TEXT                       -- every gift id already delivered, like ",claude,client,"
+  gifts_sent    TEXT                       -- every gift id already delivered, like ",guide,promo,"
 );
 
 -- Every comment the bot looked at (stops double replies)
@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS keywords (
   word      TEXT PRIMARY KEY,
   source    TEXT NOT NULL,                 -- learned | manual
   added_at  INTEGER NOT NULL,
-  gift      TEXT NOT NULL DEFAULT 'claude' -- gift id this spelling belongs to
+  gift      TEXT NOT NULL DEFAULT '' -- gift id this spelling belongs to
 );
 
 -- Unknown comments, used for learning

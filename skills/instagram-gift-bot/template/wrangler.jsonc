@@ -2,6 +2,8 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   // BOT_NAME: lowercase letters, digits and dashes, e.g. "gift-bot-ahmed"
   "name": "BOT_NAME",
+  // ACCOUNT_ID: the Cloudflare account id the user confirmed (npx wrangler whoami), so a deploy never lands on another account
+  "account_id": "ACCOUNT_ID",
   "main": "src/index.js",
   "compatibility_date": "2025-09-01",
   // Keep variables the owner adds in the Cloudflare dashboard (IG_APP_SECRET) when redeploying

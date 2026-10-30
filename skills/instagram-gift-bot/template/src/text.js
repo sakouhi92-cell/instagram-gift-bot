@@ -14,7 +14,7 @@ export const NOT_RECEIVED = [
 const ARABIC_MARKS = /[ؐ-ًؚ-ٰٟۖ-ۭـ]/g; // tashkeel + tatweel
 
 // Lowercase, remove accents/tashkeel/emoji/punctuation, unify Arabic letters,
-// collapse repeated letters ("claaaude" -> "claude"). Returns a list of words.
+// collapse repeated letters ("guiiide" -> "guide"). Returns a list of words.
 export function words(text) {
   let t = (text || '').toLowerCase().normalize('NFKD').replace(/[̀-ͯ]/g, '');
   t = t.replace(ARABIC_MARKS, '')
